@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.Serialization;
+using System.Text;
 using Linklaget;
 
 /// <summary>
@@ -126,9 +127,6 @@ namespace Transportlaget
 		/// </param>
 		public int receive (ref byte[] buf)
         {
-            if (receiveAck())
-                return 0;
-
             byte CS_HI, CS_LO, SEQ, Type;
 
             int size = link.receive(ref buffer);
@@ -140,10 +138,11 @@ namespace Transportlaget
                 SEQ = buffer[2];
                 Type = buffer[3];
 
-                for (int i = 4; i < size; i++)
-                {
-                    buf[i] = buffer[i];
-                }
+                if(int.Parse(Type.ToString()) == 0)
+                    for (int i = 4; i < size; i++)
+                    {
+                        buf[i] = buffer[i];
+                    }
 
                 sendAck(true);
 
