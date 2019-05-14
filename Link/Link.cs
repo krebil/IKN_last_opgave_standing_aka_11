@@ -1,5 +1,6 @@
 using System;
 using System.IO.Ports;
+using System.Text;
 
 /// <summary>
 /// Link.
@@ -65,7 +66,7 @@ namespace Linklaget
 		/// </param>
 		public void send (byte[] buf, int size)
 		{
-	    	// TO DO Your own code
+	    	
 		}
 
 		/// <summary>
@@ -78,9 +79,37 @@ namespace Linklaget
 		/// Size.
 		/// </param>
 		public int receive (ref byte[] buf)
-		{
-	    	// TO DO Your own code
-			return 0;
-		}
+        {
+            try
+            {
+                serialPort.Open();
+
+                serialPort.Read(buffer, 0, serialPort.BytesToRead);
+
+                if (buffer[0].ToString() != "A" || buffer[buffer.Length].ToString() != "A")
+                    return 0;
+
+                else
+                {
+                    string stringBuf = buffer.ToString().Substring(1, buffer.Length - 1);
+
+
+                    stringBuf = stringBuf.Replace("BC", "A");
+                    stringBuf = stringBuf.Replace("BD", "B");
+
+                    buf = Encoding.UTF8.GetBytes(stringBuf);
+                }
+            }
+            catch (Exception)
+            {
+                return 0;
+            }
+            finally
+            {
+                serialPort.Close();
+            }
+
+            return buf.Length;
+        }
 	}
 }
