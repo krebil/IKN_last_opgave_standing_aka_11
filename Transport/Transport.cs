@@ -121,8 +121,8 @@ namespace Transportlaget
         /// </param>
         public void send(byte[] buf, int size)
         {
-			do
-			{
+			//do
+			//{
 				byte[] data = new byte[size + 4];
 				Array.Copy(buf, 0, data, 4, size);
 
@@ -131,7 +131,7 @@ namespace Transportlaget
 				checksum.calcChecksum(ref data, data.Length);
 
 				link.send(data, data.Length);
-			} while (receiveAck() == false);
+			//} while (receiveAck() == false);
 
         }
 
@@ -167,7 +167,7 @@ namespace Transportlaget
                     Console.WriteLine("Transport::Failed to write to referenced byte");
                     return 0;
                 }
-                sendAck(true);
+                //sendAck(true);
                 return count;
             }
             
