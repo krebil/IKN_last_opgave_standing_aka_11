@@ -144,7 +144,7 @@ namespace Transportlaget
 
             if(success && dataReceived)
             {
-                Console.WriteLine("Transport::Data received");
+                Console.WriteLine("Transport::ACK and Data received");
                 try
                 {
                     buffer.CopyTo(buf, 4);
@@ -152,6 +152,7 @@ namespace Transportlaget
                 catch (Exception)
                 {
                     Console.WriteLine("Transport::Failed to write to referenced byte");
+					return 0;
                 }
                 sendAck(true);
                 return buffer.Length - 4;

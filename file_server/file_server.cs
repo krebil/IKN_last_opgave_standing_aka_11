@@ -25,7 +25,7 @@ namespace Application
             {
                 string path = "../../";
                 Console.WriteLine("waiting for connection...");
-                Byte[] buff = new Byte[BUFSIZE];
+                Byte[] buff = new Byte[BUFSIZE+10];
 
                 transport.receive(ref buff);
 
@@ -75,7 +75,7 @@ namespace Application
 		/// </param>
 		public static void Main (string[] args)
 		{
-			new file_server();
+			file_server fs = new file_server();
 		}
 	}
 }
