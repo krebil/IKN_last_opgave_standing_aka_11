@@ -19,7 +19,35 @@ namespace Application
 		/// </summary>
 		private file_server ()
 		{
-			// TO DO Your own code
+            Transport transport = new Transport(BUFSIZE,APP);
+            
+            while(true)
+            {
+                string path = "../../";
+                Console.WriteLine("waiting for connection...");
+                Byte[] buff = new Byte[BUFSIZE];
+
+                transport.receive(ref buff);
+
+                string filename = Encoding.UTF8.GetString(buff);
+                Console.WriteLine("checking if file exists");
+                if(File.Exists(path + filename))
+                {
+                    Console.WriteLine("File exists");
+                    Console.WriteLine("Sending file: " + filename);
+                    Byte[] fileToSend = File.ReadAllBytes(path + filename);
+
+                    Console.WriteLine("Sending file...");
+                    transport.send(fileToSend, fileToSend.Length);
+                    Console.WriteLine("File sent!");
+
+                }
+                else
+                {
+                    Console.WriteLine(filename + " does not exist");
+                }
+            }
+
 		}
 
 		/// <summary>

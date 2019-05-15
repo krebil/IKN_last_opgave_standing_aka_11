@@ -48,7 +48,7 @@ namespace Linklaget
 
             buffer = new byte[(BUFSIZE * 2)];
 
-          
+
             serialPort.ReadTimeout = 500;
 
             serialPort.DiscardInBuffer();
@@ -66,39 +66,59 @@ namespace Linklaget
         /// </param>
         public void send(byte[] buf, int size)
         {
-            buffer.SetValue(DELIMITER, 0);
-            int j = 1;
-            for (int i = 0; i < buf.Length; i++)
+            int count = 0; // counts bytes sent
+
+            while (count < size) // while bytes sent is less that amount of bytes to send
             {
-                if (buf[i] == (byte)'A')
+                buffer.SetValue(DELIMITER, 0);
+                int j = 1; // number of extra characters due to swap of A's and B's
+                for (int i = 0; i < buf.Length; i++)
                 {
-                    buffer[i + j] = (byte)'B';
-                    j++;
-                    buffer[i + j] = (byte)'C';
+                    if (i < 1000 || size - (count + i) <= 0)
+                    {
+                        if (buf[i + count] == (byte)'A')
+                        {
+                            buffer[i + j + count] = (byte)'B';
+                            j++;
+                            buffer[i + j + count] = (byte)'C';
+                        }
+                        else if (buf[i + count] == (byte)'B')
+                        {
+                            buffer[i + j + count] = (byte)'B';
+                            j++;
+                            buffer[i + j + count] = (byte)'D';
+                        }
+                    }
+                    else
+                    {
+                        if (size - (count + i) <= 0)
+                        {
+                            count = size;
+                            break;
+                        }
+                        else
+                        {
+                            count += 1000;
+                            break;
+                        }
+                    }
                 }
-                else if (buf[i] == (byte)'B')
-                {
-                    buffer[i + j] = (byte)'B';
-                    j++;
-                    buffer[i + j] = (byte)'D';
-                }
+                buffer[buffer.Length] = DELIMITER;
+
+                serialPort.Write(buffer, 0, buffer.Length);
             }
-            buffer[buffer.Length] = DELIMITER;
-
-            serialPort.Write(buffer, 0, buffer.Length);
-
         }
 
-		/// <summary>
-		/// Receive the specified buf and size.
-		/// </summary>
-		/// <param name='buf'>
-		/// Buffer.
-		/// </param>
-		/// <param name='size'>
-		/// Size.
-		/// </param>
-		public int receive (ref byte[] buf)
+        /// <summary>
+        /// Receive the specified buf and size.
+        /// </summary>
+        /// <param name='buf'>
+        /// Buffer.
+        /// </param>
+        /// <param name='size'>
+        /// Size.
+        /// </param>
+        public int receive(ref byte[] buf)
         {
             try
             {
@@ -131,5 +151,5 @@ namespace Linklaget
 
             return buf.Length;
         }
-	}
+    }
 }

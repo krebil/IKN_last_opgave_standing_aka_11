@@ -115,24 +115,16 @@ namespace Transportlaget
 		/// </param>
 		public void send(byte[] buf, int size)
 		{
-            if (size <= 1000)
+            while(!receiveAck())
             {
-                var data = new byte[size + 4];
-                Array.Copy(buf, 0, data, 0, size);
-                data[2] = seqNo;
-                data[3] = (byte)0;
+                byte[] data = new byte[size + 4];
+                Array.Copy(buf, 0, data, 4, size);
 
+                data[2] = seqNo;
+                data[3] = 0; //type = data
                 checksum.calcChecksum(ref data, data.Length);
-                
+
                 link.send(data, data.Length);
-                int count = 0;
-                while(!receiveAck())
-                {
-                    if (count > 3)
-                        return;
-                    link.send(data, data.Length);
-                    count++;
-                }
             }
 		}
 
