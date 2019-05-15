@@ -1,5 +1,9 @@
 using System;
+using System.Linq.Expressions;
+using System.Reflection;
 using System.Runtime.Serialization;
+using System.Text;
+using System.Threading;
 using Linklaget;
 
 /// <summary>
@@ -136,32 +140,34 @@ namespace Transportlaget
 		/// </param>
 		public int receive (ref byte[] buf)
         {
-            if (receiveAck())
-                return 0;
+            bool success = receiveAck();
 
-            byte CS_HI, CS_LO, SEQ, Type;
-
-            int size = link.receive(ref buffer);
-
-            if (size != 0)
+            if(success && dataReceived)
             {
-                CS_HI = buffer[0];
-                CS_LO = buffer[1];
-                SEQ = buffer[2];
-                Type = buffer[3];
-
-                for (int i = 4; i < size; i++)
+                Console.WriteLine("Data received");
+                try
                 {
-                    buf[i] = buffer[i];
+                    buffer.CopyTo(buf, 4);
                 }
-
+                catch (Exception)
+                {
+                    Console.WriteLine("Failed to write to referenced byte");
+                }
                 sendAck(true);
-
-                return size - 4;
+                return buffer.Length - 4;
             }
 
+            if (!dataReceived && success)
+            {
+                Console.WriteLine("Received ack, but data was corrupted");
+                sendAck(false);
+                return 0;
+            }
+
+            Console.WriteLine("Didn't receive ack");
             sendAck(false);
             return 0;
+            
         }
 	}
 }

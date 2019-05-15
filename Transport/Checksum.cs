@@ -40,6 +40,7 @@ namespace Transportlaget
 			sum = checksum(buffer);
 			buf[(int)TransCHKSUM.CHKSUMHIGH] = (byte)((sum >> 8) & 255);
 			buf[(int)TransCHKSUM.CHKSUMLOW] = (byte)(sum & 255);
+            Array.Copy();
 		}
 	}
 }
