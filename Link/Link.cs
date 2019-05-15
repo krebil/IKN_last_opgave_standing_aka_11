@@ -160,7 +160,7 @@ namespace Linklaget
                 Console.WriteLine("Link:: failed to receive");
                 return 0;
             }
-
+            
             return buf.Length;
         }
     }

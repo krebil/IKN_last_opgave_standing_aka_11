@@ -152,8 +152,7 @@ namespace Transportlaget
                 catch (Exception)
                 {
                     Console.WriteLine("Transport::Failed to write to referenced byte");
-
-                    return 0;
+					return 0;
                 }
                 sendAck(true);
                 return buffer.Length - 4;
