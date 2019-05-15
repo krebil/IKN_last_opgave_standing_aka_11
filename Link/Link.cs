@@ -1,6 +1,7 @@
 using System;
 using System.IO.Ports;
 using System.Text;
+using System.Threading;
 
 /// <summary>
 /// Link.
@@ -126,6 +127,8 @@ namespace Linklaget
 
                 while (serialPort.ReadChar() != (int) DELIMITER)
                 {
+                    Console.WriteLine("Link: Waiting for Delimiter");
+                    Thread.Sleep(2000);
                 }
 
                 byte read = new byte();
