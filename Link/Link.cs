@@ -147,7 +147,7 @@ namespace Linklaget
                     }
                 }
 
-                string stringBuf = buffer.ToString();
+                string stringBuf = Encoding.UTF8.GetString(buffer, 0, buffer.Length);
 
                 stringBuf = stringBuf.Replace("BC", "A");
                 stringBuf = stringBuf.Replace("BD", "B");
