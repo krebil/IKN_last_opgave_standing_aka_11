@@ -134,12 +134,14 @@ namespace Linklaget
 
                 while (serialPort.ReadChar() != (int)DELIMITER)
                 {
+					Console.WriteLine("getting start char");
                 }
 
                 byte read = new byte();
                 int index = 0;
                 while (read != DELIMITER)
                 {
+					Console.WriteLine("ReadByte");
                     read = (byte)serialPort.ReadByte();
                     if (read != DELIMITER)
                     {
@@ -160,7 +162,7 @@ namespace Linklaget
                 Console.WriteLine("Link:: failed to receive");
                 return 0;
             }
-            
+			Console.WriteLine("Leaving Link");
             return buf.Length;
         }
     }

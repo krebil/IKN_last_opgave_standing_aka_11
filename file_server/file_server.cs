@@ -30,10 +30,11 @@ namespace Application
                 transport.receive(ref buff);
 
                 string filename = Encoding.UTF8.GetString(buff);
+				Console.WriteLine(filename);
                 Console.WriteLine("checking if file exists");
                 if(File.Exists(path + filename))
                 {
-                    Console.WriteLine("File exists");
+					Console.WriteLine("File exists ");
                     Console.WriteLine("Sending file: " + filename);
                     Byte[] fileToSend = File.ReadAllBytes(path + filename);
 

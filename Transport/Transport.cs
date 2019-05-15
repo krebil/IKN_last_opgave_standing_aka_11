@@ -75,6 +75,7 @@ namespace Transportlaget
 		/// </returns>
 		private bool receiveAck()
 		{
+			Console.WriteLine("waiting to receive ack");
 			recvSize = link.receive(ref buffer);
 			dataReceived = true;
 
@@ -100,6 +101,7 @@ namespace Transportlaget
 		/// </param>
 		private void sendAck (bool ackType)
 		{
+			Console.WriteLine("Sending ack");
 			byte[] ackBuf = new byte[(int)TransSize.ACKSIZE];
 			ackBuf [(int)TransCHKSUM.SEQNO] = (byte)
 				(ackType ? (byte)buffer [(int)TransCHKSUM.SEQNO] : (byte)(buffer [(int)TransCHKSUM.SEQNO] + 1) % 2);
@@ -125,7 +127,7 @@ namespace Transportlaget
             data[2] = seqNo;
             data[3] = 0; //type = data
             checksum.calcChecksum(ref data, data.Length);
-
+			Console.WriteLine("Transport: sending");
             link.send(data, data.Length);
 
         }
@@ -138,6 +140,7 @@ namespace Transportlaget
         /// </param>
         public int receive(ref byte[] buf)
         {
+			Console.WriteLine("receive: starting receiveAck");
             bool success = receiveAck();
 
             if (success && dataReceived)
