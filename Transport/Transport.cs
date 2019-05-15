@@ -144,14 +144,14 @@ namespace Transportlaget
 
             if(success && dataReceived)
             {
-                Console.WriteLine("Data received");
+                Console.WriteLine("Transport::Data received");
                 try
                 {
                     buffer.CopyTo(buf, 4);
                 }
                 catch (Exception)
                 {
-                    Console.WriteLine("Failed to write to referenced byte");
+                    Console.WriteLine("Transport::Failed to write to referenced byte");
                 }
                 sendAck(true);
                 return buffer.Length - 4;
@@ -159,12 +159,12 @@ namespace Transportlaget
 
             if (!dataReceived && success)
             {
-                Console.WriteLine("Received ack, but data was corrupted");
+                Console.WriteLine("Transport::Received ack, but data was corrupted");
                 sendAck(false);
                 return 0;
             }
 
-            Console.WriteLine("Didn't receive ack");
+            Console.WriteLine("Transport::Didn't receive ack");
             sendAck(false);
             return 0;
             
