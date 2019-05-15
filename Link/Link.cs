@@ -16,11 +16,13 @@ namespace Linklaget
         /// <summary>
         /// The DELIMITE for slip protocol.
         /// </summary>
-        const byte DELIMITER = (byte)'A';
+        const byte DELIMITER = (byte) 'A';
+
         /// <summary>
         /// The buffer for link.
         /// </summary>
         private byte[] buffer;
+
         /// <summary>
         /// The serial port.
         /// </summary>
@@ -56,6 +58,49 @@ namespace Linklaget
             serialPort.DiscardOutBuffer();
         }
 
+        
+        public void send(byte[] buf, int size)
+        {
+            int numberOfAOrB = 0;
+            //string dataToSend = Encoding.ASCII.GetString(buf);
+            for (int i = 0; i < buf.Length; ++i)
+            {
+                if (buf[i] == (byte)'A' | buf[i] == (byte)'B')
+                    numberOfAOrB++;
+            }
+            byte[] sendBuf = new byte[size + 2 + numberOfAOrB];
+            int x = 0;
+            sendBuf[0] = (byte)'A';
+            for (int i = 1; i < sendBuf.Length - 1; i++)
+            {
+                if (buf[i - 1 - x] == (byte)'A')
+                {
+                    sendBuf[i] = (byte)'B';
+                    i++;
+                    sendBuf[i] = (byte)'C';
+                    x++;
+                }
+                else if (buf[i - 1 - x] == (byte)'B')
+                {
+                    sendBuf[i] = (byte)'B';
+                    i++;
+                    sendBuf[i] = (byte)'D';
+                    x++;
+                }
+                else
+                {
+                    sendBuf[i] = buf[i - 1 - x];
+                }
+            }
+
+            sendBuf[sendBuf.Length - 1] = (byte)'A';
+
+
+            serialPort.Write(sendBuf, 0, size + 2 + numberOfAOrB);
+        }
+
+        /*
+
         /// <summary>
         /// Send the specified buf and size.
         /// </summary>
@@ -69,13 +114,14 @@ namespace Linklaget
         {
             int count = 0; // counts bytes sent
 
+            
             while (count < size) // while bytes sent is less that amount of bytes to send
             {
-                buffer.SetValue(DELIMITER, 0);
+				buffer[0] = DELIMITER;
                 int j = 1; // number of extra characters due to swap of A's and B's
                 for (int i = 0; i < buf.Length; i++)
                 {
-					if (i < 1000 && !(size - (count + i) <= 0))
+                    if (i < 1000 || size - (count + i) <= 0)
                     {
                         if (buf[i + count] == (byte)'A')
                         {
@@ -104,13 +150,12 @@ namespace Linklaget
                         }
                     }
                 }
-
+                
                 buffer[buffer.Length - 1] = DELIMITER;
-
-
-                serialPort.Write(buffer, 0, buffer.Length);
+                
+				serialPort.Write(buffer, 0, buffer.Length);
             }
-        }
+        }*/
 
         /// <summary>
         /// Receive the specified buf and size.
@@ -125,24 +170,23 @@ namespace Linklaget
         {
             try
             {
-              while (serialPort.BytesToRead == 0)
+                while (serialPort.BytesToRead == 0)
                 {
                     Console.WriteLine("Link: Waiting for data...");
                     Thread.Sleep(2500);
                 }
 
 
-                while (serialPort.ReadChar() != (int)DELIMITER)
+                while (serialPort.ReadChar() != (int) DELIMITER)
                 {
-					Console.WriteLine("getting start char");
                 }
 
                 byte read = new byte();
                 int index = 0;
                 while (read != DELIMITER)
                 {
-					Console.WriteLine("ReadByte");
-                    read = (byte)serialPort.ReadByte();
+                    Console.WriteLine("ReadByte");
+                    read = (byte) serialPort.ReadByte();
                     if (read != DELIMITER)
                     {
                         buffer[index++] = read;
@@ -162,7 +206,8 @@ namespace Linklaget
                 Console.WriteLine("Link:: failed to receive");
                 return 0;
             }
-			Console.WriteLine("Leaving Link");
+
+            Console.WriteLine("Leaving Link");
             return buf.Length;
         }
     }
