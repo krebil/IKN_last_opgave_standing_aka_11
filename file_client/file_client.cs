@@ -41,13 +41,12 @@ namespace Application
             }
             else
             {
-                Console.WriteLine("no arguments found, using standard ip and path");
-                ip = "10.0.0.1";
+                Console.WriteLine("No arguments found, using path");
                 fileName = "Data.img";
             }
             path = "../../img/" + fileName;
 
-            // changeing path if file exists
+            // changing path if file exists
             if (File.Exists(path))
             {
                 path += DateTime.Now.Date.ToShortDateString().Replace('/', ':') + ":" + DateTime.Now.ToShortTimeString().Replace('/', ':');

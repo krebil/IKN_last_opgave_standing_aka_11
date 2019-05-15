@@ -16,13 +16,11 @@ namespace Linklaget
         /// <summary>
         /// The DELIMITE for slip protocol.
         /// </summary>
-        const byte DELIMITER = (byte) 'A';
-
+        const byte DELIMITER = (byte)'A';
         /// <summary>
         /// The buffer for link.
         /// </summary>
         private byte[] buffer;
-
         /// <summary>
         /// The serial port.
         /// </summary>
@@ -58,7 +56,6 @@ namespace Linklaget
             serialPort.DiscardOutBuffer();
         }
 
-        
         public void send(byte[] buf, int size)
         {
             int numberOfAOrB = 0;
@@ -117,7 +114,7 @@ namespace Linklaget
             
             while (count < size) // while bytes sent is less that amount of bytes to send
             {
-				buffer[0] = DELIMITER;
+                buffer[0] = DELIMITER;
                 int j = 1; // number of extra characters due to swap of A's and B's
                 for (int i = 0; i < buf.Length; i++)
                 {
@@ -153,7 +150,7 @@ namespace Linklaget
                 
                 buffer[buffer.Length - 1] = DELIMITER;
                 
-				serialPort.Write(buffer, 0, buffer.Length);
+                serialPort.Write(buffer, 0, buffer.Length);
             }
         }*/
 
@@ -177,7 +174,7 @@ namespace Linklaget
                 }
 
 
-                while (serialPort.ReadChar() != (int) DELIMITER)
+                while (serialPort.ReadChar() != (int)DELIMITER)
                 {
                 }
 
@@ -185,8 +182,7 @@ namespace Linklaget
                 int index = 0;
                 while (read != DELIMITER)
                 {
-                    Console.WriteLine("ReadByte");
-                    read = (byte) serialPort.ReadByte();
+                    read = (byte)serialPort.ReadByte();
                     if (read != DELIMITER)
                     {
                         buffer[index++] = read;
@@ -207,7 +203,6 @@ namespace Linklaget
                 return 0;
             }
 
-            Console.WriteLine("Leaving Link");
             return buf.Length;
         }
     }
