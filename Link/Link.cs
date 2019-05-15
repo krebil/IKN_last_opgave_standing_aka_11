@@ -104,21 +104,28 @@ namespace Linklaget
             {
                 serialPort.Open();
 
-                serialPort.Read(buffer, 0, serialPort.BytesToRead);
-
-                if (buffer[0].ToString() != "A" || buffer[buffer.Length].ToString() != "A")
-                    return 0;
-
-                else
+                while (serialPort.ReadChar() != (int) DELIMITER)
                 {
-                    string stringBuf = buffer.ToString().Substring(1, buffer.Length - 1);
-
-
-                    stringBuf = stringBuf.Replace("BC", "A");
-                    stringBuf = stringBuf.Replace("BD", "B");
-
-                    buf = Encoding.UTF8.GetBytes(stringBuf);
                 }
+
+                byte read = new byte();
+                int index = 0;
+                while (read != DELIMITER)
+                {
+                    read = (byte)serialPort.ReadByte();
+                    if (read != DELIMITER)
+                    {
+                        buffer[index++] = read;
+                    }
+                }
+
+                string stringBuf = buffer.ToString();
+
+                stringBuf = stringBuf.Replace("BC", "A");
+                stringBuf = stringBuf.Replace("BD", "B");
+
+                buf = Encoding.UTF8.GetBytes(stringBuf);
+
             }
             catch (Exception)
             {
