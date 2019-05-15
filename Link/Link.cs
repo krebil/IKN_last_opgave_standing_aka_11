@@ -165,6 +165,7 @@ namespace Linklaget
         /// </param>
         public int receive(ref byte[] buf)
         {
+			int index = 0;
             try
             {
                 while (serialPort.BytesToRead == 0)
@@ -179,7 +180,7 @@ namespace Linklaget
                 }
 
                 byte read = new byte();
-                int index = 0;
+                
                 while (read != DELIMITER)
                 {
                     read = (byte)serialPort.ReadByte();
@@ -189,7 +190,7 @@ namespace Linklaget
                     }
                 }
 
-                string stringBuf = Encoding.UTF8.GetString(buffer, 0, buffer.Length);
+                string stringBuf = Encoding.UTF8.GetString(buffer, 0, index);
 
                 stringBuf = stringBuf.Replace("BC", "A");
                 stringBuf = stringBuf.Replace("BD", "B");
@@ -203,7 +204,7 @@ namespace Linklaget
                 return 0;
             }
 
-            return buf.Length;
+            return index;
         }
     }
 }

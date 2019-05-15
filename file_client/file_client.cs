@@ -11,7 +11,7 @@ namespace Application
         /// <summary>
         /// The BUFSIZE.
         /// </summary>
-        private const int BUFSIZE = 1000;
+        private const int BUFSIZE = 100000;
         private const string APP = "FILE_CLIENT";
 
         /// <summary>
@@ -46,18 +46,29 @@ namespace Application
             }
             path = "../../img/" + fileName;
 
-            // changing path if file exists
-            if (File.Exists(path))
-            {
-                path += DateTime.Now.Date.ToShortDateString().Replace('/', ':') + ":" + DateTime.Now.ToShortTimeString().Replace('/', ':');
-            }
 
             Console.WriteLine("requesting file: " + fileName);
             transport.send(Encoding.UTF8.GetBytes(path), Encoding.UTF8.GetBytes(path).Length);
 
+			// changing path if file exists
+			if (File.Exists(path))
+			{
+				path += DateTime.Now.Date.ToShortDateString().Replace('/', ':') + ":" + DateTime.Now.ToShortTimeString().Replace('/', ':');
+			}
+
             Console.WriteLine("trying to fetch file...");
             var dataReceived = new byte[BUFSIZE];
-            transport.receive(ref dataReceived);
+            int count = transport.receive(ref dataReceived);
+			var file = new byte[count];
+
+			for (int i = 0; i < count; i ++){
+				file[i] = dataReceived[i];
+			}
+
+			//File.Create(path, count);
+			File.WriteAllBytes(path, file);
+
+
             Console.Write("file received!");
         }
 

@@ -149,7 +149,7 @@ namespace Transportlaget
                 int count = 0;
                 try
                 {
-                    for (int i = 4; i < buf.Length; i++)
+                    for (int i = 4; i < recvSize + 4; i++)
                     {
                         if (buffer[i] != 0)
                         {
