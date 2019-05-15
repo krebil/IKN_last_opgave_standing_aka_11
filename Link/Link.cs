@@ -75,7 +75,7 @@ namespace Linklaget
                 int j = 1; // number of extra characters due to swap of A's and B's
                 for (int i = 0; i < buf.Length; i++)
                 {
-                    if (i < 1000 || size - (count + i) <= 0)
+					if (i < 1000 && !(size - (count + i) <= 0))
                     {
                         if (buf[i + count] == (byte)'A')
                         {
