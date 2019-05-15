@@ -164,17 +164,17 @@ namespace Transportlaget
                     Console.WriteLine("Transport::Failed to write to referenced byte");
                     return 0;
                 }
-                //sendAck(true);
+                sendAck(true);
                 return count;
             }
-
+            
             if (!dataReceived && success)
             {
                 Console.WriteLine("Transport::Received ack, but data was corrupted");
                 sendAck(false);
                 return 0;
             }
-
+            
             Console.WriteLine("Transport::Didn't receive ack");
             sendAck(false);
             return 0;
