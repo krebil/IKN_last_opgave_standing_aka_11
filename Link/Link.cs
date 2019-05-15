@@ -123,8 +123,6 @@ namespace Linklaget
         {
             try
             {
-                serialPort.Open();
-
                 while (serialPort.ReadChar() != (int) DELIMITER)
                 {
                     Console.WriteLine("Link: Waiting for Delimiter");
