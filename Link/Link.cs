@@ -35,7 +35,7 @@ namespace Linklaget
 #if DEBUG
             if (APP.Equals("FILE_SERVER"))
             {
-                serialPort = new SerialPort("/dev/ttyS0", 115200, Parity.None, 8, StopBits.One);
+                serialPort = new SerialPort("/dev/ttyS1", 115200, Parity.None, 8, StopBits.One);
             }
             else
             {
