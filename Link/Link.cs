@@ -196,8 +196,9 @@ namespace Linklaget
                 stringBuf = stringBuf.Replace("BD", "B");
 
                 var temp = Encoding.UTF8.GetBytes(stringBuf);
-
-				Array.Copy(temp, buf, temp.Length);
+                
+				Array.Copy(temp, buf, index);
+               
 
             }
             catch (Exception)

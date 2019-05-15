@@ -46,7 +46,7 @@ namespace Application
             }
             path = "../../img/" + fileName;
 
-
+            
             Console.WriteLine("requesting file: " + fileName);
             transport.send(Encoding.UTF8.GetBytes(path), Encoding.UTF8.GetBytes(path).Length);
 
