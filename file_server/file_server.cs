@@ -35,24 +35,10 @@ namespace Application
                     fileNameBuf[i] = buff[i];
                 }
                 string filename = Encoding.UTF8.GetString(fileNameBuf);
-                Console.WriteLine("checking if file exists");
-                if (File.Exists(filename))
-                {
-                    Console.WriteLine("File exists");
-                    Console.WriteLine("Sending file: " + filename);
-                    byte[] fileToSend = File.ReadAllBytes(filename);
 
-                    Console.WriteLine("Sending file...");
-                    transport.send(fileToSend, fileToSend.Length);
-                    Console.WriteLine("File sent!");
 
-                }
-                else
-                {
-                    Console.WriteLine(filename + " does not exist");
-                }
-            }
-
+				sendFile(filename, 0, transport);
+            }         
         }
 
         /// <summary>
@@ -69,7 +55,30 @@ namespace Application
         /// </param>
         private void sendFile(String fileName, long fileSize, Transport transport)
         {
-            // TO DO Your own code
+			int packetsToSend;
+			Console.WriteLine("Checking if file exists");
+
+			if (File.Exists(fileName))
+			{
+				Console.WriteLine("File exists");
+                Console.WriteLine("Sending file: " + fileName);
+
+				byte[] fileToSend = File.ReadAllBytes(fileName);
+
+                packetsToSend = fileToSend.Length/1000;
+				if (fileToSend.Length % 1000 != 0)
+					++packetsToSend;
+
+				
+				Console.WriteLine("Sending file...");
+				transport.send(fileToSend, fileToSend.Length);
+				Console.WriteLine("File sent!");
+				
+			}
+			else
+			{
+				Console.WriteLine(fileName + " does not exist");
+			}
         }
 
         /// <summary>
