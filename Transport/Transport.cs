@@ -119,18 +119,16 @@ namespace Transportlaget
 		/// </param>
 		public void send(byte[] buf, int size)
 		{
-            while(!receiveAck())
-            {
-                byte[] data = new byte[size + 4];
-                Array.Copy(buf, 0, data, 4, size);
+            byte[] data = new byte[size + 4];
+            Array.Copy(buf, 0, data, 4, size);
 
-                data[2] = seqNo;
-                data[3] = 0; //type = data
-                checksum.calcChecksum(ref data, data.Length);
+            data[2] = seqNo;
+            data[3] = 0; //type = data
+            checksum.calcChecksum(ref data, data.Length);
 
-                link.send(data, data.Length);
-            }
-		}
+            link.send(data, data.Length);
+
+        }
 
         /// <summary>
         /// Receive the specified buffer.
