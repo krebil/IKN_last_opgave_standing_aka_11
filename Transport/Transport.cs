@@ -132,19 +132,19 @@ namespace Transportlaget
             }
 		}
 
-		/// <summary>
-		/// Receive the specified buffer.
-		/// </summary>
-		/// <param name='buffer'>
-		/// Buffer.
-		/// </param>
-		public int receive (ref byte[] buf)
+        /// <summary>
+        /// Receive the specified buffer.
+        /// </summary>
+        /// <param name='buffer'>
+        /// Buffer.
+        /// </param>
+        public int receive(ref byte[] buf)
         {
             bool success = receiveAck();
 
-            if(success && dataReceived)
+            if (success && dataReceived)
             {
-                Console.WriteLine("Transport::Data received");
+                Console.WriteLine("Transport::ACK and Data received");
                 try
                 {
                     buffer.CopyTo(buf, 4);
@@ -152,6 +152,8 @@ namespace Transportlaget
                 catch (Exception)
                 {
                     Console.WriteLine("Transport::Failed to write to referenced byte");
+
+                    return 0;
                 }
                 sendAck(true);
                 return buffer.Length - 4;
@@ -167,7 +169,7 @@ namespace Transportlaget
             Console.WriteLine("Transport::Didn't receive ack");
             sendAck(false);
             return 0;
-            
+
         }
-	}
+    }
 }

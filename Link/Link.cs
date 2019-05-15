@@ -35,11 +35,11 @@ namespace Linklaget
 #if DEBUG
             if (APP.Equals("FILE_SERVER"))
             {
-                serialPort = new SerialPort("/dev/ttySn0", 115200, Parity.None, 8, StopBits.One);
+                serialPort = new SerialPort("/dev/ttyS0", 115200, Parity.None, 8, StopBits.One);
             }
             else
             {
-                serialPort = new SerialPort("/dev/ttySn1", 115200, Parity.None, 8, StopBits.One);
+                serialPort = new SerialPort("/dev/ttyS1", 115200, Parity.None, 8, StopBits.One);
             }
 #else
 				serialPort = new SerialPort("/dev/ttyS1",115200,Parity.None,8,StopBits.One);
@@ -59,7 +59,7 @@ namespace Linklaget
         /// <summary>
         /// Send the specified buf and size.
         /// </summary>
-        /// <param name='buf'>
+        /// <param name='buf'>S
         /// Buffer.
         /// </param>
         /// <param name='size'>
@@ -104,7 +104,9 @@ namespace Linklaget
                         }
                     }
                 }
-                buffer[buffer.Length] = DELIMITER;
+
+                buffer[buffer.Length - 1] = DELIMITER;
+
 
                 serialPort.Write(buffer, 0, buffer.Length);
             }
@@ -123,10 +125,15 @@ namespace Linklaget
         {
             try
             {
-                while (serialPort.ReadChar() != (int) DELIMITER)
+              while (serialPort.BytesToRead == 0)
                 {
-                    Console.WriteLine("Link: Waiting for Delimiter");
-                    Thread.Sleep(2000);
+                    Console.WriteLine("Link: Waiting for data...");
+                    Thread.Sleep(2500);
+                }
+
+
+                while (serialPort.ReadChar() != (int)DELIMITER)
+                {
                 }
 
                 byte read = new byte();
@@ -150,11 +157,8 @@ namespace Linklaget
             }
             catch (Exception)
             {
+                Console.WriteLine("Link:: failed to receive");
                 return 0;
-            }
-            finally
-            {
-                serialPort.Close();
             }
 
             return buf.Length;
