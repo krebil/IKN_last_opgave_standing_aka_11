@@ -20,23 +20,28 @@ namespace Application
 		private file_server ()
 		{
             Transport transport = new Transport(BUFSIZE,APP);
-            
+
             while(true)
             {
                 string path = "../../";
                 Console.WriteLine("waiting for connection...");
-                Byte[] buff = new Byte[BUFSIZE+10];
+                byte[] buff = new byte[BUFSIZE + 10];
 
-                transport.receive(ref buff);
+                int count = transport.receive(ref buff);
 
-                string filename = Encoding.UTF8.GetString(buff);
-				Console.WriteLine(filename);
-                Console.WriteLine("checking if file exists");
-                if(File.Exists(path + filename))
+                byte[] fileNameBuf = new byte[count];
+
+                for (int i = 0; i < count; i++)
                 {
-					Console.WriteLine("File exists ");
+                    fileNameBuf[i] = buff[i];
+                }
+                string filename = Encoding.UTF8.GetString(fileNameBuf);
+                Console.WriteLine("checking if file exists");
+                if (File.Exists(filename))
+                {
+                    Console.WriteLine("File exists");
                     Console.WriteLine("Sending file: " + filename);
-                    Byte[] fileToSend = File.ReadAllBytes(path + filename);
+                    byte[] fileToSend = File.ReadAllBytes(path + filename);
 
                     Console.WriteLine("Sending file...");
                     transport.send(fileToSend, fileToSend.Length);
@@ -49,7 +54,7 @@ namespace Application
                 }
             }
 
-		}
+        }
 
 		/// <summary>
 		/// Sends the file.
