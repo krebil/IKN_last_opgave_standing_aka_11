@@ -30,13 +30,11 @@ namespace Application
         private file_client(String[] args)
         {
             transport = new Transport(BUFSIZE, APP);
-            string ip;
             string fileName;
             string path;
 
             if (args.Length > 1)
             {
-                ip = args[0];
                 fileName = args[1];
             }
             else
@@ -45,31 +43,34 @@ namespace Application
                 fileName = "Data.img";
             }
             path = "../../img/" + fileName;
-
             
-            Console.WriteLine("requesting file: " + fileName);
-            transport.send(Encoding.UTF8.GetBytes(path), Encoding.UTF8.GetBytes(path).Length);
-
-			// changing path if file exists
-			if (File.Exists(path))
+			if(File.Exists(path))
 			{
-				path += DateTime.Now.Date.ToShortDateString().Replace('/', ':') + ":" + DateTime.Now.ToShortTimeString().Replace('/', ':');
+				path += fileName + DateTime.Now.ToShortDateString();
 			}
 
-            Console.WriteLine("trying to fetch file...");
-            var dataReceived = new byte[BUFSIZE];
-            int count = transport.receive(ref dataReceived);
-			var file = new byte[count];
+			transport.send(Encoding.UTF8.GetBytes(fileName), Encoding.UTF8.GetBytes(fileName).Length);
 
-			for (int i = 0; i < count; i ++){
-				file[i] = dataReceived[i];
+			var lengthBytes = new byte[1000];
+			transport.receive(ref lengthBytes);
+			var FileLength = BitConverter.ToInt32(lengthBytes, 0);
+			if(FileLength < 1)
+			{
+				Console.WriteLine("File does not exist");
 			}
+			else
+			{
+				Console.WriteLine("Getting File");
+				var FileData = new Byte[BUFSIZE];
+				transport.receive(ref FileData);
 
-			//File.Create(path, count);
-			File.WriteAllBytes(path, file);
+				Console.WriteLine("Creating file");
+				File.Create(path);
+				File.WriteAllBytes(path, FileData);
+				Console.WriteLine("File created at: " + path);
+			}
+			Console.WriteLine("Client closing");
 
-
-            Console.Write("file received!");
         }
 
         public static void Main(string[] args)
