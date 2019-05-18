@@ -40,16 +40,18 @@ namespace Application
             else
             {
                 Console.WriteLine("No arguments found, using path");
-                fileName = "Data.img";
+                fileName = "Data.jpg";
             }
             path = "../../img/" + fileName;
 
-            if (File.Exists(path))
-            {
-                path += fileName + DateTime.Now.ToShortDateString();
-            }
+           
 
             transport.send(Encoding.UTF8.GetBytes(path), Encoding.UTF8.GetBytes(path).Length);
+
+			if (File.Exists(path))
+            {
+				path += DateTime.Now.ToShortDateString().Replace("/","-").Replace("\\","_");
+            }
 
             var lengthBytes = new byte[100];
             transport.receive(ref lengthBytes);
@@ -61,12 +63,15 @@ namespace Application
             else
             {
                 Console.WriteLine("Getting File");
-                var FileData = new Byte[BUFSIZE];
+				var FileData = new Byte[int.Parse(FileLength)];
                 transport.receive(ref FileData);
 
                 Console.WriteLine("Creating file");
-                File.Create(path);
-                File.WriteAllBytes(path, FileData);
+				FileStream fs = File.Create(path);
+                
+				fs.Write(FileData, 0, FileData.Length);
+				fs.Close();
+                
                 Console.WriteLine("File created at: " + path);
             }
             Console.WriteLine("Client closing");

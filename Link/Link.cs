@@ -252,13 +252,13 @@ namespace Linklaget
                     }
                     else
                     {
-                        bytes.Add(buffer[i]);
+                        bytes.Add(buffer[s]);
                     }
                 }
 
                 var temp = bytes.ToArray();
 
-				Array.Copy(temp, buf, index);
+				Array.Copy(temp, buf, temp.Length);
                
 
             }
