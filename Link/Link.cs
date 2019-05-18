@@ -2,6 +2,7 @@ using System;
 using System.IO.Ports;
 using System.Text;
 using System.Threading;
+using System.Collections.Generic;
 
 /// <summary>
 /// Link.
@@ -231,13 +232,32 @@ namespace Linklaget
                     }
                 }
 
-                string stringBuf = Encoding.UTF8.GetString(buffer, 0, index);
+				List<byte> bytes = new List<byte>();
+                for (int i = 0; i < index; i++)
+                {
+                    if (buffer[i] == (byte)'B')
+                    {
+                        if (buffer[1 + 1] == (byte)'C')
+                        {
+                            //A
+                            bytes.Add((byte)'A');
+                            i++;
+                        }
+                        else if (buffer[1 + 1] == (byte)'C')
+                        {
+                            //B
+                            bytes.Add((byte)'B');
+                            i++;
+                        }
+                    }
+                    else
+                    {
+                        bytes.Add(buffer[i]);
+                    }
+                }
 
-                stringBuf = stringBuf.Replace("BC", "A");
-                stringBuf = stringBuf.Replace("BD", "B");
+                var temp = bytes.ToArray();
 
-                var temp = Encoding.UTF8.GetBytes(stringBuf);
-                
 				Array.Copy(temp, buf, index);
                
 
