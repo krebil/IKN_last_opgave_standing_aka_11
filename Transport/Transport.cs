@@ -121,14 +121,17 @@ namespace Transportlaget
         /// </param>
         public void send(byte[] buf, int size)
         {
-            byte[] data = new byte[size + 4];
-            Array.Copy(buf, 0, data, 4, size);
+			//do
+			//{
+				byte[] data = new byte[size + 4];
+				Array.Copy(buf, 0, data, 4, size);
 
-            data[2] = seqNo;
-            data[3] = 0; //type = data
-            checksum.calcChecksum(ref data, data.Length);
+				data[2] = seqNo;
+				data[3] = 0; //type = data
+				checksum.calcChecksum(ref data, data.Length);
 
-            link.send(data, data.Length);
+				link.send(data, data.Length);
+			//} while (receiveAck() == false);
 
         }
 
@@ -149,7 +152,7 @@ namespace Transportlaget
                 int count = 0;
                 try
                 {
-                    for (int i = 4; i < buf.Length; i++)
+                    for (int i = 4; i < recvSize + 4; i++)
                     {
                         if (buffer[i] != 0)
                         {
@@ -167,14 +170,13 @@ namespace Transportlaget
                 //sendAck(true);
                 return count;
             }
-
+            
             if (!dataReceived && success)
             {
-                Console.WriteLine("Transport::Received ack, but data was corrupted");
-                sendAck(false);
+                Console.WriteLine("Transport::Received ack, no data");
                 return 0;
             }
-
+            
             Console.WriteLine("Transport::Didn't receive ack");
             sendAck(false);
             return 0;

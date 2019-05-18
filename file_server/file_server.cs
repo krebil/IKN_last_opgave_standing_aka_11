@@ -47,9 +47,6 @@ namespace Application
 
                     byte[] fileToSend = File.ReadAllBytes(filename);
 
-                    Console.WriteLine("Sending file...");
-                    transport.send(fileToSend, fileToSend.Length);
-                    Console.WriteLine("File sent!");
 
                 }
                 else
