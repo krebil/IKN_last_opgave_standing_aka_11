@@ -43,33 +43,33 @@ namespace Application
                 fileName = "Data.img";
             }
             path = "../../img/" + fileName;
-            
-			if(File.Exists(path))
-			{
-				path += fileName + DateTime.Now.ToShortDateString();
-			}
 
-			transport.send(Encoding.UTF8.GetBytes(fileName), Encoding.UTF8.GetBytes(fileName).Length);
+            if (File.Exists(path))
+            {
+                path += fileName + DateTime.Now.ToShortDateString();
+            }
 
-			var lengthBytes = new byte[1000];
-			transport.receive(ref lengthBytes);
-			var FileLength = BitConverter.ToInt32(lengthBytes, 0);
-			if(FileLength < 1)
-			{
-				Console.WriteLine("File does not exist");
-			}
-			else
-			{
-				Console.WriteLine("Getting File");
-				var FileData = new Byte[BUFSIZE];
-				transport.receive(ref FileData);
+            transport.send(Encoding.UTF8.GetBytes(path), Encoding.UTF8.GetBytes(path).Length);
 
-				Console.WriteLine("Creating file");
-				File.Create(path);
-				File.WriteAllBytes(path, FileData);
-				Console.WriteLine("File created at: " + path);
-			}
-			Console.WriteLine("Client closing");
+            var lengthBytes = new byte[100];
+            transport.receive(ref lengthBytes);
+            var FileLength = Encoding.UTF8.GetString(lengthBytes);
+            if (int.Parse(FileLength) < 1)
+            {
+                Console.WriteLine("File does not exist");
+            }
+            else
+            {
+                Console.WriteLine("Getting File");
+                var FileData = new Byte[BUFSIZE];
+                transport.receive(ref FileData);
+
+                Console.WriteLine("Creating file");
+                File.Create(path);
+                File.WriteAllBytes(path, FileData);
+                Console.WriteLine("File created at: " + path);
+            }
+            Console.WriteLine("Client closing");
 
         }
 
