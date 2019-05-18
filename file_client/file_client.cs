@@ -54,18 +54,41 @@ namespace Application
             }
 
             var lengthBytes = new byte[100];
-            transport.receive(ref lengthBytes);
+
+
+            transport.receive(ref lengthBytes);         
             var FileLength = Encoding.UTF8.GetString(lengthBytes);
-            if (int.Parse(FileLength) < 1)
+			int length = 0;
+			try
+			{
+				length = int.Parse(FileLength);	
+			}
+			catch
+			{
+				Console.WriteLine("length is empty");
+			}
+			if (length < 1)
             {
                 Console.WriteLine("File does not exist");
             }
             else
             {
+				int fLength = int.Parse(FileLength);
                 Console.WriteLine("Getting File");
-				var FileData = new Byte[int.Parse(FileLength)];
-                transport.receive(ref FileData);
+				var FileData = new Byte[fLength];
+				int recvData = 0;
+				while(recvData < fLength)
+				{
+					byte[] temp = new byte[BUFSIZE];
 
+					int tLenght = transport.receive(ref temp);
+					recvData += tLenght;
+
+					for (int i = 0; i < tLenght; i++)
+					{
+						FileData.SetValue(temp[i], i + recvData);
+					}
+				}
                 Console.WriteLine("Creating file");
 				FileStream fs = File.Create(path);
                 

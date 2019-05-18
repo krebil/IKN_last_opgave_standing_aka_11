@@ -252,7 +252,7 @@ namespace Linklaget
                     }
                     else
                     {
-                        bytes.Add(buffer[s]);
+                        bytes.Add(buffer[i]);
                     }
                 }
 
