@@ -47,15 +47,23 @@ namespace Application
 
                     byte[] fileToSend = File.ReadAllBytes(filename);
 
+                    Console.WriteLine("Sending file...");
+                    transport.send(fileToSend, fileToSend.Length);
+                    Console.WriteLine("File sent!");
 
                 }
                 else
                 {
                     Console.WriteLine(filename + " does not exist");
                 }
-                
 
-                //sendFile(filename, 0, transport);
+
+
+
+
+
+
+                sendFile(filename, 0, transport);
             }
         }
 
@@ -84,11 +92,20 @@ namespace Application
                 int finalBufSize;
                 byte[] fileToSend = File.ReadAllBytes(fileName);
 
+                // Get length in bytes and tell client
+                byte[] intBytes = BitConverter.GetBytes(fileToSend.Length);
+                if (BitConverter.IsLittleEndian)
+                    Array.Reverse(intBytes);
+                byte[] result = intBytes;
+                transport.send(result, result.Length);
+
+                //Send actual file in packets
                 packetsToSend = fileToSend.Length / 1000;
                 if ((finalBufSize = fileToSend.Length) % 1000 != 0)
                     ++packetsToSend;
 
                 byte[] filePackage = new byte[BUFSIZE];
+
 
                 for (int i = 0; i < packetsToSend; i++)
                 {
@@ -126,6 +143,9 @@ namespace Application
             }
             else
             {
+                byte[] failedByte = new byte[1];
+                failedByte[1] = (byte)0;
+                transport.send(failedByte, 1);
                 Console.WriteLine(fileName + " does not exist");
             }
         }
