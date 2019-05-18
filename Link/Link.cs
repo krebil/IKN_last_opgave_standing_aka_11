@@ -97,7 +97,48 @@ namespace Linklaget
         }
 
         /*
+         Mathias send
+        /// <summary>
+        /// Send the specified buf and size.
+        /// </summary>
+        /// <param name='buf'>S
+        /// Buffer.
+        /// </param>
+        /// <param name='size'>
+        /// Size.
+        /// </param>
+        public void send(byte[] buf, int size)
+        {
+            buffer = new byte[size * 2]; //Doesn't check for size, should be 1000
+            buffer[0] = DELIMITER;
+            int count = 1;
 
+            for (int i = 0; i < size; i++)
+            {
+                if (buf[i] == DELIMITER)
+                {
+                    buffer[i + count] = (byte)'B';
+                    buffer[i + ++count] = (byte)'C';               
+                }
+                else if (buf[i] == (byte)'B')
+                {
+                    buffer[i + count] = (byte)'B';
+                    buffer[i + ++count] = (byte)'D';
+                }
+                else
+                {
+                    buffer[i + count] = buf[i];
+                }
+            }
+
+            buffer[size + count] = DELIMITER;
+
+            serialPort.Write(buffer, 0, size + count + 1);
+        }
+        */
+
+        /*
+        Tobycat send
         /// <summary>
         /// Send the specified buf and size.
         /// </summary>
