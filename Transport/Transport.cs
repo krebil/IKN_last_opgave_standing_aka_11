@@ -145,11 +145,11 @@ namespace Transportlaget
 		/// </param>
 		public int receive(ref byte[] buf)
 		{
+			buffer = new byte[buffer.Length];
 			recvSize = link.receive(ref buffer);
 
 			while (!checksum.checkChecksum(buffer,recvSize))
-			{
-
+			{            
 				sendAck(false);
 				recvSize = link.receive(ref buffer);
 			}

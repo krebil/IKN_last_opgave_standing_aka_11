@@ -73,22 +73,30 @@ namespace Application
             }
             else
             {
+				
 				int fLength = int.Parse(FileLength);
+				int packetsToSend = fLength / 1000;
+				int finalBufSize = fLength % 1000;
+				if(finalBufSize != 0)
+                    ++packetsToSend;
+				
                 Console.WriteLine("Getting File");
 				var FileData = new Byte[fLength];
-				int recvData = 0;
-				while(recvData < fLength)
+				int recvData = 0, packet = 0;
+
+				for (int i = 0; i < packetsToSend; i++)
 				{
-					byte[] temp = new byte[BUFSIZE];
+					byte[] temp = new byte[1000];
+					int tempint = 0;
+					tempint = transport.receive(ref temp);
+					recvData += tempint;
 
-					int tLenght = transport.receive(ref temp);
-					recvData += tLenght;
-
-					for (int i = 0; i < tLenght; i++)
+					for (int j = 0; j < tempint;j++)
 					{
-						FileData.SetValue(temp[i], i + recvData);
+						FileData[j + recvData] = temp[j];
 					}
 				}
+
                 Console.WriteLine("Creating file");
 				FileStream fs = File.Create(path);
                 
