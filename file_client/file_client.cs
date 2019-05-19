@@ -13,6 +13,8 @@ namespace Application
         /// </summary>
         private const int BUFSIZE = 1000;
         private const string APP = "FILE_CLIENT";
+        private Transport transport;
+        private string path;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="file_client"/> class.
@@ -26,12 +28,11 @@ namespace Application
         /// <param name='args'>
         /// Filnavn med evtuelle sti.
         /// </param>
-        Transport transport;
         private file_client(String[] args)
         {
             transport = new Transport(BUFSIZE, APP);
             string fileName;
-            string path;
+
 
             if (args.Length > 1)
             {
@@ -53,8 +54,15 @@ namespace Application
                 path += DateTime.Now.ToShortTimeString().Replace("/", "-").Replace("\\", "_");
             }
 
-            var lengthBytes = new byte[100];
+            receive();
 
+            Console.WriteLine("Client closing");
+
+        }
+
+        public void receive()
+        {
+            var lengthBytes = new byte[100];
 
             transport.receive(ref lengthBytes);
             var FileLength = Encoding.UTF8.GetString(lengthBytes);
@@ -102,8 +110,6 @@ namespace Application
 
                 Console.WriteLine("File created at: " + path);
             }
-            Console.WriteLine("Client closing");
-
         }
 
         public static void Main(string[] args)
@@ -112,7 +118,4 @@ namespace Application
             new file_client(args);
         }
     }
-
 }
-
-
