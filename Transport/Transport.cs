@@ -171,7 +171,7 @@ namespace Transportlaget
             }
             catch (Exception)
             {
-                Console.WriteLine("Transport::Failed to write to referenced byte");
+                Console.WriteLine("Transport::Failed to write to referenced byte array");
                 return 0;
             }
         }
