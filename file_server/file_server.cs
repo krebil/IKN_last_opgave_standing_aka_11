@@ -101,7 +101,8 @@ namespace Application
 
                 //Send actual file in packets
                 packetsToSend = fileToSend.Length / 1000;
-                if ((finalBufSize = fileToSend.Length) % 1000 != 0)
+                finalBufSize = fileToSend.Length % 1000;
+                if (finalBufSize != 0)
                     ++packetsToSend;
 
                 byte[] filePackage = new byte[BUFSIZE];
@@ -109,7 +110,7 @@ namespace Application
 
                 for (int i = 0; i < packetsToSend; i++)
                 {
-                    if (i != packetsToSend) //if not last packet
+                    if (i != packetsToSend - 1) //if not last packet
                     {
                         //Copy array
                         for (int ind = 0; ind < 1000; ind++)
@@ -124,7 +125,7 @@ namespace Application
                     {
                         filePackage = new byte[finalBufSize];
 
-                        for (int ind = 0; ind < finalBufSize; ind++)
+                        for (int ind = 0; ind < finalBufSize - 1; ind++)
                         {
                             filePackage[ind] = fileToSend[(i * 1000) + ind];
                         }

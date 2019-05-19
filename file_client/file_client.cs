@@ -40,7 +40,7 @@ namespace Application
             else
             {
                 Console.WriteLine("No arguments found, using path");
-                fileName = "Data.img";
+                fileName = "Data.jpg";
             }
             path = "../../img/" + fileName;
 
@@ -82,34 +82,16 @@ namespace Application
                 if (finalBufSize != 0)
                     ++packetsToSend;
 
-                int recvData = 0, packet = 0;
-
-
                 byte[] tempByte = new byte[BUFSIZE];
-                for (int i = 0; i < packetsToSend - 1; i++)
+                for (int i = 0; i < packetsToSend; i++)
                 {
                     int tempInt = transport.receive(ref tempByte);
 
-                    for (int j = 0; j < 1000; j++)
+                    for (int j = 0; j < tempInt; j++)
                     {
                         FileData[j + i * 1000] = tempByte[j];
                     }
-                }
-
-
-
-
-                for (int i = 0; i < packetsToSend; i++)
-                {
-                    byte[] temp = new byte[1000];
-                    int tempint = 0;
-                    tempint = transport.receive(ref temp);
-                    recvData += tempint;
-
-                    for (int j = 0; j < 1000; j++)
-                    {
-                        FileData[j + recvData] = temp[j];
-                    }
+                    Console.WriteLine($"Received packet {i}");
                 }
 
                 Console.WriteLine("Creating file");

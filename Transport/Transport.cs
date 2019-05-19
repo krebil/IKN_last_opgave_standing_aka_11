@@ -161,13 +161,10 @@ namespace Transportlaget
             int count = 0;
             try
             {
-                for (int i = 4; i < recvSize + 4; i++)
+                for (int i = 0; i < recvSize - 4; i++)
                 {
-                    if (buffer[i] != 0)
-                    {
-                        ++count;
-                        buf[i - 4] = buffer[i];
-                    }
+                    ++count;
+                    buf[i] = buffer[i + 4];
                 }
                 string stringBufTrans2 = Encoding.UTF8.GetString(buf);
                 return count;
@@ -177,8 +174,6 @@ namespace Transportlaget
                 Console.WriteLine("Transport::Failed to write to referenced byte");
                 return 0;
             }
-
-
         }
     }
 }
