@@ -11,7 +11,7 @@ namespace Application
         /// <summary>
         /// The BUFSIZE.
         /// </summary>
-        private const int BUFSIZE = 100000;
+        private const int BUFSIZE = 1000;
         private const string APP = "FILE_CLIENT";
 
         /// <summary>
@@ -40,69 +40,84 @@ namespace Application
             else
             {
                 Console.WriteLine("No arguments found, using path");
-                fileName = "Data.jpg";
+                fileName = "Data.img";
             }
             path = "../../img/" + fileName;
 
-           
+
 
             transport.send(Encoding.UTF8.GetBytes(path), Encoding.UTF8.GetBytes(path).Length);
 
-			if (File.Exists(path))
+            if (File.Exists(path))
             {
-				path += DateTime.Now.ToShortDateString().Replace("/","-").Replace("\\","_");
+                path += DateTime.Now.ToShortDateString().Replace("/", "-").Replace("\\", "_");
             }
 
             var lengthBytes = new byte[100];
 
 
-            transport.receive(ref lengthBytes);         
+            transport.receive(ref lengthBytes);
             var FileLength = Encoding.UTF8.GetString(lengthBytes);
-			int length = 0;
-			try
-			{
-				length = int.Parse(FileLength);	
-			}
-			catch
-			{
-				Console.WriteLine("length is empty");
-			}
-			if (length < 1)
+            int length = 0;
+            try
+            {
+                length = int.Parse(FileLength);
+            }
+            catch
+            {
+                Console.WriteLine("length is empty");
+            }
+            if (length < 1)
             {
                 Console.WriteLine("File does not exist");
             }
             else
             {
-				
-				int fLength = int.Parse(FileLength);
-				int packetsToSend = fLength / 1000;
-				int finalBufSize = fLength % 1000;
-				if(finalBufSize != 0)
-                    ++packetsToSend;
-				
+                int fLength = int.Parse(FileLength);
                 Console.WriteLine("Getting File");
-				var FileData = new Byte[fLength];
-				int recvData = 0, packet = 0;
+                var FileData = new Byte[fLength];
 
-				for (int i = 0; i < packetsToSend; i++)
-				{
-					byte[] temp = new byte[1000];
-					int tempint = 0;
-					tempint = transport.receive(ref temp);
-					recvData += tempint;
+                int packetsToSend = fLength / 1000;
+                int finalBufSize = fLength % 1000;
+                if (finalBufSize != 0)
+                    ++packetsToSend;
 
-					for (int j = 0; j < tempint;j++)
-					{
-						FileData[j + recvData] = temp[j];
-					}
-				}
+                int recvData = 0, packet = 0;
+
+
+                byte[] tempByte = new byte[BUFSIZE];
+                for (int i = 0; i < packetsToSend - 1; i++)
+                {
+                    int tempInt = transport.receive(ref tempByte);
+
+                    for (int j = 0; j < 1000; j++)
+                    {
+                        FileData[j + i * 1000] = tempByte[j];
+                    }
+                }
+
+
+
+
+                for (int i = 0; i < packetsToSend; i++)
+                {
+                    byte[] temp = new byte[1000];
+                    int tempint = 0;
+                    tempint = transport.receive(ref temp);
+                    recvData += tempint;
+
+                    for (int j = 0; j < 1000; j++)
+                    {
+                        FileData[j + recvData] = temp[j];
+                    }
+                }
 
                 Console.WriteLine("Creating file");
-				FileStream fs = File.Create(path);
-                
-				fs.Write(FileData, 0, FileData.Length);
-				fs.Close();
-                
+                FileStream fs = File.Create(path);
+
+                fs.Write(FileData, 0, FileData.Length);
+                fs.Close();
+
                 Console.WriteLine("File created at: " + path);
             }
             Console.WriteLine("Client closing");

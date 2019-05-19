@@ -207,7 +207,8 @@ namespace Linklaget
         /// </param>
         public int receive(ref byte[] buf)
         {
-			int index = 0;
+            int index = 0;
+            int count = 0;
             try
             {
                 while (serialPort.BytesToRead == 0)
@@ -222,7 +223,7 @@ namespace Linklaget
                 }
 
                 byte read = new byte();
-                
+
                 while (read != DELIMITER)
                 {
                     read = (byte)serialPort.ReadByte();
@@ -232,34 +233,37 @@ namespace Linklaget
                     }
                 }
 
-				List<byte> bytes = new List<byte>();
+
+                List<byte> bytes = new List<byte>();
                 for (int i = 0; i < index; i++)
                 {
                     if (buffer[i] == (byte)'B')
                     {
-                        if (buffer[1 + 1] == (byte)'C')
+                        if (buffer[i + 1] == (byte)'C')
                         {
                             //A
                             bytes.Add((byte)'A');
                             i++;
                         }
-                        else if (buffer[1 + 1] == (byte)'C')
+                        else if (buffer[i + 1] == (byte)'D')
                         {
                             //B
                             bytes.Add((byte)'B');
                             i++;
                         }
+                        count++;
                     }
                     else
                     {
                         bytes.Add(buffer[i]);
+                        count++;
                     }
                 }
 
                 var temp = bytes.ToArray();
 
-				Array.Copy(temp, buf, temp.Length);
-               
+                Array.Copy(temp, buf, temp.Length);
+
 
             }
             catch (Exception)
@@ -268,7 +272,7 @@ namespace Linklaget
                 return 0;
             }
 
-            return index;
+            return count;
         }
     }
 }
