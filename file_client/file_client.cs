@@ -50,7 +50,7 @@ namespace Application
 
             if (File.Exists(path))
             {
-                path += DateTime.Now.ToShortDateString().Replace("/", "-").Replace("\\", "_");
+                path += DateTime.Now.ToShortTimeString().Replace("/", "-").Replace("\\", "_");
             }
 
             var lengthBytes = new byte[100];
