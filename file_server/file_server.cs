@@ -39,33 +39,6 @@ namespace Application
 
                 sendFile(filename, 0, transport);
 
-                /*
-                Console.WriteLine("Checking if file exists");
-
-                if (File.Exists(filename))
-                {
-                    Console.WriteLine("File exists");
-                    Console.WriteLine("Sending file: " + filename);
-
-                    byte[] fileToSend = File.ReadAllBytes(filename);
-
-                    Console.WriteLine("Sending file...");
-                    transport.send(fileToSend, fileToSend.Length);
-                    Console.WriteLine("File sent!");
-
-                }
-                else
-                {
-                    Console.WriteLine(filename + " does not exist");
-                }
-
-
-                */
-
-
-
-
-                //sendFile(filename, 0, transport);
             }
         }
 
