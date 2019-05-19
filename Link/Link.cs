@@ -114,10 +114,9 @@ namespace Linklaget
             int count = 0;
             try
             {
+                Console.WriteLine("Link: Waiting for data...");
                 while (serialPort.BytesToRead == 0)
                 {
-                    Console.WriteLine("Link: Waiting for data...");
-                    Thread.Sleep(2500);
                 }
 
 
